@@ -109,10 +109,9 @@ const publishedDate = computed(() => props.post.created_at_human);
     </section>
 
     <!-- Article Content -->
-    <main class="mx-auto w-full max-w-3xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+    <main class="mx-auto w-full max-w-4xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
       <!-- Title -->
-      <h1 class="mb-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{{ post.title }}</h1>
-
+      <h1 class="mb-6 text-balance text-3xl font-bold tracking-tight sm:text-6xl">{{ post.title }}</h1>
       <!-- Meta: author, date, tags -->
       <div class="mb-8 flex flex-wrap items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
         <span v-if="post.author" class="inline-flex items-center gap-2">
@@ -136,7 +135,7 @@ const publishedDate = computed(() => props.post.created_at_human);
       </div>
 
       <!-- Content -->
-      <article class="prose prose-zinc max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0">
+      <article class="mt-12 prose prose-zinc max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0">
         <div v-html="htmlContent" />
       </article>
 
