@@ -1,20 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import DOMPurify from 'dompurify';
-import { marked } from 'marked';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
-import 'prismjs/components/prism-markup-templating';
-import 'prismjs/components/prism-php';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-sql';
-import 'prismjs/components/prism-css';
-import { computed, onMounted, watch, nextTick } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 import CommentSection from '@/components/CommentSection.vue';
+import { useMarkdown } from '@/composables/useMarkdown';
 import { home } from '@/routes';
 
 interface Tag {
@@ -72,23 +61,19 @@ const props = defineProps<{
   canRegister?: boolean;
 }>();
 
+const { renderMarkdown, highlightCode } = useMarkdown();
+
 onMounted(() => {
-    Prism.highlightAll();
+    highlightCode();
 });
 
 // Markdown-to-HTML converter
 const htmlContent = computed(() => {
-  const raw = marked.parse(props.post.content ?? '', {
-    gfm: true,
-    breaks: false,
-  });
-  return DOMPurify.sanitize(raw as string);
+    return renderMarkdown(props.post.content ?? '');
 });
 
 watch(htmlContent, () => {
-    nextTick(() => {
-        Prism.highlightAll();
-    });
+    highlightCode();
 });
 
 const publishedDate = computed(() => props.post.created_at_human);

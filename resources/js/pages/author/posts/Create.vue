@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-import DOMPurify from 'dompurify';
-import { marked } from 'marked';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-markup-templating';
-import 'prismjs/components/prism-php';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/themes/prism-tomorrow.css';
-import { computed, nextTick, ref, watch, onMounted, onUnmounted } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useMarkdown } from '@/composables/useMarkdown';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as authorPosts, store as storePost } from '@/routes/author/posts';
@@ -47,6 +39,8 @@ const form = useForm({
     image: null as File | null,
     tags: [] as string[],
 });
+
+const { renderMarkdown, highlightCode } = useMarkdown();
 
 const imagePreview = ref<string | null>(null);
 const showPreview = ref(false);
@@ -132,30 +126,19 @@ const submit = () => {
 };
 
 const htmlContent = computed(() => {
-    const source = form.content || '';
-    // Normalize common markdown mistakes: ensure a space after leading # in ATX headings (e.g., "#Title" -> "# Title")
-    const normalized = source.replace(/^(#{1,6})(\S)/gm, '$1 $2');
-    const rendered = marked.parse(normalized, {
-        gfm: true,
-        breaks: false,
-    });
-    return DOMPurify.sanitize(rendered as string);
+    return renderMarkdown(form.content || '');
 });
 
 watch(htmlContent, () => {
     if (showPreview.value) {
-        nextTick(() => {
-            Prism.highlightAll();
-        });
+        highlightCode();
     }
 });
 
 const togglePreview = () => {
     showPreview.value = !showPreview.value;
     if (showPreview.value) {
-        nextTick(() => {
-            Prism.highlightAll();
-        });
+        highlightCode();
     }
 };
 </script>
