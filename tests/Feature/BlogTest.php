@@ -15,10 +15,10 @@ test('landing page is rendered correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts', 1)
-        ->where('posts.0.title', 'Landing Page Test Post')
-        ->has('posts.0.tags', 1)
-        ->where('posts.0.tags.0.name', 'TestTag')
+        ->has('posts.data', 1)
+        ->where('posts.data.0.title', 'Landing Page Test Post')
+        ->has('posts.data.0.tags', 1)
+        ->where('posts.data.0.tags.0.name', 'TestTag')
     );
 });
 
@@ -56,8 +56,8 @@ test('full text search works correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts', 1)
-        ->where('posts.0.title', 'Laravel Framework')
+        ->has('posts.data', 1)
+        ->where('posts.data.0.title', 'Laravel Framework')
     );
 
     // Search for "framework"
@@ -66,7 +66,7 @@ test('full text search works correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts', 3)
+        ->has('posts.data', 3)
     );
 });
 
@@ -90,9 +90,9 @@ test('blog tags filtering works correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts', 2)
+        ->has('posts.data', 2)
         ->where('selectedTag.slug', 'laravel')
-        ->where('posts', function ($posts) {
+        ->where('posts.data', function ($posts) {
             $titles = collect($posts)->pluck('title')->sort()->values()->all();
             expect($titles)->toEqual(collect(['Shared Post', 'Laravel Post'])->sort()->values()->all());
 
@@ -106,9 +106,9 @@ test('blog tags filtering works correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts', 2)
+        ->has('posts.data', 2)
         ->where('selectedTag.slug', 'vue')
-        ->where('posts', function ($posts) {
+        ->where('posts.data', function ($posts) {
             $titles = collect($posts)->pluck('title')->sort()->values()->all();
             expect($titles)->toEqual(collect(['Shared Post', 'Vue Post'])->sort()->values()->all());
 

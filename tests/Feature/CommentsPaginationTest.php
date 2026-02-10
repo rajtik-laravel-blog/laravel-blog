@@ -17,7 +17,7 @@ it('paginates root comments on post detail page', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('posts/Show')
             ->has('comments', fn (Assert $comments) => $comments
-                ->has('data', 10)
+                ->has('data', 5)
                 ->where('total', 15)
                 ->where('prev_page_url', null)
                 ->where('current_page', 1)

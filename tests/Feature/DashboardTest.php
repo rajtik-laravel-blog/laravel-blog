@@ -24,8 +24,8 @@ test('authenticated users can visit the dashboard and see their comments', funct
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Dashboard')
-        ->has('comments', 1)
-        ->where('comments.0.content', 'My test comment')
-        ->where('comments.0.post.title', $post->title)
+        ->has('comments.data', 1)
+        ->where('comments.data.0.content', 'My test comment')
+        ->where('comments.data.0.post.title', $post->title)
     );
 });
