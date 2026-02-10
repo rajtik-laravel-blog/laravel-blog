@@ -63,17 +63,16 @@ defineProps<{
                             {{
                                 selectedTag
                                     ? `Články se štítkem #${selectedTag.name}`
-                                    : 'Postřehy a novinky ze světa Laravelu'
+                                    : 'Laravel zblízka: tipy, triky a zkušenosti z praxe'
                             }}
                         </template>
                     </h1>
                     <p
                         v-if="!selectedTag && !$page.props.search"
-                        class="mt-3 text-sm leading-6 text-[#706f6c] dark:text-[#A1A09A]"
+                        class="mt-3 sm:text-base text-sm leading-6 text-[#706f6c] dark:text-[#A1A09A]"
                     >
-                        Moderní, čistý a responzivní blog postavený na Laravelu
-                        12, Inertia & Vue 3, stylovaný TailwindCSS v4. Přepněte
-                        si systémové téma a užijte si světlý i tmavý režim.
+                        Neoficiální blog o Laravelu – návody, praktické tipy,
+                        deep dive do funkcí a zkušenosti z reálného vývoje s PHP a Laravel frameworkem.
                     </p>
                     <div v-if="selectedTag || $page.props.search" class="mt-4">
                         <Link
@@ -147,9 +146,8 @@ defineProps<{
                 <p>
                     Vytvořeno v
                     <span class="font-medium text-[#f53003] dark:text-[#FF4433]"
-                        >Laravelu</span
-                    >. Téma kombinuje světlý a tmavý režim v duchu loga
-                    Laravelu.
+                        >Laravel</span
+                    > &copy; {{ new Date().getFullYear() }} by Vladislav Rajtmajer.
                 </p>
             </div>
         </footer>
