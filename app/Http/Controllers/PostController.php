@@ -35,7 +35,7 @@ class PostController extends Controller
         $post->user_id = auth()->id();
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts', 'public');
+            $path = $request->file('image')->store('posts', 'images');
             $post->image_url = Storage::url($path);
         }
 
