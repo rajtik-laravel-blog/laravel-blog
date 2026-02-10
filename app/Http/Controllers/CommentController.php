@@ -7,9 +7,26 @@ use App\Http\Requests\Comments\StoreCommentRequest;
 use App\Http\Requests\Comments\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CommentController extends Controller
 {
+    public function index(): Response
+    {
+        $comments = auth()->user()
+            ->comments()
+            ->with('post')
+            ->latest()
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('comments/Index', [
+            'comments' => $comments,
+        ]);
+    }
+
     public function store(StoreCommentRequest $request, Post $post)
     {
         $post->comments()->create([

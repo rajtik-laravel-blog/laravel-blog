@@ -8,11 +8,11 @@ test('only authors can access create post page', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($user)
-        ->get(route('posts.create'))
+        ->get(route('author.posts.create'))
         ->assertStatus(403);
 
     $this->actingAs($author)
-        ->get(route('posts.create'))
+        ->get(route('author.posts.create'))
         ->assertStatus(200);
 });
 
@@ -20,7 +20,7 @@ test('author can create a post', function () {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)
-        ->post(route('posts.store'), [
+        ->post(route('author.posts.store'), [
             'title' => 'Můj nový článek',
             'excerpt' => 'Krátký výtah',
             'content' => 'Obsah článku s **markdownem**',
@@ -33,14 +33,14 @@ test('author can create a post', function () {
     expect($post->user_id)->toBe($author->id);
     expect($post->tags)->toHaveCount(2);
 
-    $response->assertRedirect(route('posts.show', $post->slug));
+    $response->assertRedirect(route('author.posts.index'));
 });
 
 test('validation errors are returned in czech', function () {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)
-        ->post(route('posts.store'), [
+        ->post(route('author.posts.store'), [
             'title' => '',
             'content' => '',
         ]);

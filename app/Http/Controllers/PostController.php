@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
@@ -14,46 +12,12 @@ class PostController extends Controller
 {
     public function create()
     {
-        if (! auth()->user()->is_author) {
-            abort(403);
-        }
-
-        return Inertia::render('posts/Create', [
-            'tags' => Tag::all(),
-        ]);
+        abort(404);
     }
 
     public function store(StorePostRequest $request)
     {
-        $validated = $request->validated();
-
-        $post = new Post;
-        $post->title = $validated['title'];
-        $post->slug = Str::slug($validated['title']).'-'.Str::random(5);
-        $post->excerpt = $validated['excerpt'];
-        $post->content = $validated['content'];
-        $post->user_id = auth()->id();
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts', 'images');
-            $post->image_url = Storage::url($path);
-        }
-
-        $post->save();
-
-        if (! empty($validated['tags'])) {
-            $tagIds = [];
-            foreach ($validated['tags'] as $tagName) {
-                $tag = Tag::firstOrCreate(
-                    ['slug' => Str::slug($tagName)],
-                    ['name' => $tagName]
-                );
-                $tagIds[] = $tag->id;
-            }
-            $post->tags()->sync($tagIds);
-        }
-
-        return redirect()->route('posts.show', $post->slug);
+        abort(404);
     }
 
     public function show(string $slug)

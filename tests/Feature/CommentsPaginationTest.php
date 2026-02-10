@@ -26,7 +26,7 @@ it('paginates root comments on post detail page', function () {
         );
 });
 
-it('paginates user comments on dashboard', function () {
+it('paginates user comments on comments index', function () {
     $user = User::factory()->author()->create();
     $post = Post::factory()->for($user, 'author')->create();
 
@@ -34,10 +34,10 @@ it('paginates user comments on dashboard', function () {
     Comment::factory()->count(15)->for($user)->for($post)->create();
 
     $this->actingAs($user)
-        ->get(route('dashboard'))
+        ->get(route('comments.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Dashboard')
+            ->component('comments/Index')
             ->has('comments', fn (Assert $comments) => $comments
                 ->where('total', 15)
                 ->has('data', 10)

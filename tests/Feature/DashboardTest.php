@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Comment;
-use App\Models\Post;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -10,22 +8,15 @@ test('guests are redirected to the login page', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the dashboard and see their comments', function () {
+test('authenticated users can visit the dashboard', function () {
     $user = User::factory()->create();
-    $post = Post::factory()->create();
-    $comment = Comment::factory()->create([
-        'user_id' => $user->id,
-        'post_id' => $post->id,
-        'content' => 'My test comment',
-    ]);
 
     $response = $this->actingAs($user)->get(route('dashboard'));
 
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Dashboard')
-        ->has('comments.data', 1)
-        ->where('comments.data.0.content', 'My test comment')
-        ->where('comments.data.0.post.title', $post->title)
+        ->has('stats')
+        ->has('latestReplies')
     );
 });

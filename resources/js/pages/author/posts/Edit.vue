@@ -11,27 +11,52 @@ import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
 import { computed, nextTick, ref, watch, onMounted, onUnmounted } from 'vue';
 
-import BlogNavigation from '@/components/BlogNavigation.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { store as storePost } from '@/routes/posts';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
+import { index as authorPosts, update as updatePost } from '@/routes/author/posts';
+import { type BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
+    post: {
+        id: number;
+        title: string;
+        excerpt: string;
+        content: string;
+        image_url: string | null;
+        tags: Array<{ id: number; name: string; slug: string }>;
+    };
     tags: Array<{ id: number; name: string; slug: string }>;
 }>();
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Nástěnka',
+        href: dashboard().url,
+    },
+    {
+        title: 'Moje články',
+        href: authorPosts().url,
+    },
+    {
+        title: 'Upravit článek',
+        href: '#',
+    },
+];
+
 const form = useForm({
-    title: '',
-    excerpt: '',
-    content: '',
+    title: props.post.title,
+    excerpt: props.post.excerpt || '',
+    content: props.post.content,
     image: null as File | null,
-    tags: [] as string[],
+    tags: props.post.tags.map(t => t.name),
 });
 
-const imagePreview = ref<string | null>(null);
+const imagePreview = ref<string | null>(props.post.image_url);
 const showPreview = ref(false);
 const imageInput = ref<HTMLInputElement | null>(null);
 
@@ -109,14 +134,11 @@ onUnmounted(() => {
 });
 
 const submit = () => {
-    form.post(storePost().url, {
-        onSuccess: () => form.reset(),
-    });
+    form.post(updatePost(props.post.id).url);
 };
 
 const htmlContent = computed(() => {
     const source = form.content || '';
-    // Normalize common markdown mistakes: ensure a space after leading # in ATX headings (e.g., "#Title" -> "# Title")
     const normalized = source.replace(/^(#{1,6})(\S)/gm, '$1 $2');
     const rendered = marked.parse(normalized, {
         gfm: true,
@@ -144,23 +166,21 @@ const togglePreview = () => {
 </script>
 
 <template>
-    <Head title="Vytvořit článek" />
+    <Head title="Upravit článek" />
 
-    <div class="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
-        <BlogNavigation />
-
-        <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="mb-8 flex items-center justify-between">
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div class="min-w-5xl mb-8 flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold tracking-tight">Vytvořit nový článek</h1>
-                    <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Podělte se o své myšlenky se světem.</p>
+                    <h1 class="text-3xl font-bold tracking-tight">Upravit článek</h1>
+                    <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Aktualizujte svůj obsah pro své čtenáře.</p>
                 </div>
                 <div class="flex gap-3">
                     <Button variant="outline" @click="togglePreview">
                         {{ showPreview ? 'Upravit' : 'Náhled' }}
                     </Button>
                     <Button @click="submit" :disabled="form.processing">
-                        Publikovat článek
+                        Uložit změny
                     </Button>
                 </div>
             </div>
@@ -224,7 +244,7 @@ const togglePreview = () => {
                                 @change="handleImageChange"
                             />
                             <Button variant="outline" type="button" @click="imageInput?.click()">
-                                Vybrat obrázek
+                                {{ imagePreview ? 'Změnit obrázek' : 'Vybrat obrázek' }}
                             </Button>
                             <p class="mt-2 text-xs text-zinc-500">Doporučený poměr stran 21:9. Maximálně 2MB.</p>
                             <p v-if="form.errors.image" class="mt-1 text-xs text-red-500">{{ form.errors.image }}</p>
@@ -304,7 +324,7 @@ const togglePreview = () => {
 
             <!-- Preview -->
             <div v-else class="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                <div class="mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-[#19140015] bg-white shadow-xl dark:border-[#3E3E3A] dark:bg-[#0a0a0a] dark:shadow-red-900/10">
+                <div class="mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-[#19140015] bg-white shadow-xl dark:border-[#3E3E3A] dark:bg-[#0a0a0a] dark:shadow-red-900/10">
                     <img
                         v-if="imagePreview"
                         :src="imagePreview"
@@ -328,9 +348,5 @@ const togglePreview = () => {
                 </div>
             </div>
         </main>
-
-        <footer class="mt-10 border-t border-[#1914001f] py-8 text-center text-sm text-zinc-500 dark:border-[#2a2a28] dark:text-zinc-400">
-            Vytvořeno pomocí Laravel + Inertia + Vue. Stylizováno v barvách Laravelu.
-        </footer>
-    </div>
+    </AppLayout>
 </template>
