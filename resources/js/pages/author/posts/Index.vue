@@ -127,8 +127,8 @@ const formatDate = (dateString: string) => {
 
                 <!-- Pagination -->
                 <div v-if="posts.meta && posts.meta.last_page > 1" class="border-t border-[#19140015] px-6 py-4 dark:border-[#3E3E3A]">
-                    <!-- Simple pagination for now -->
-                    <nav class="flex items-center justify-center gap-2">
+                    <!-- Desktop Pagination -->
+                    <nav class="hidden sm:flex items-center justify-center gap-2">
                         <Link
                             v-for="link in posts.links"
                             :key="link.label"
@@ -140,6 +140,31 @@ const formatDate = (dateString: string) => {
                             ]"
                         >
                             <span v-html="link.label"></span>
+                        </Link>
+                    </nav>
+
+                    <!-- Mobile Pagination -->
+                    <nav class="flex sm:hidden items-center justify-between gap-2">
+                        <Link
+                            :href="posts.links[0].url || ''"
+                            class="flex-1 px-4 py-2 text-center text-sm font-medium rounded-lg border border-[#19140015] dark:border-[#3E3E3A] transition-colors"
+                            :class="[
+                                !posts.links[0].url ? 'opacity-50 cursor-not-allowed bg-zinc-50 dark:bg-zinc-900/50' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                            ]"
+                        >
+                            <span v-html="posts.links[0].label"></span>
+                        </Link>
+                        <div class="px-4 text-xs font-medium text-zinc-500">
+                            {{ posts.meta.current_page }} / {{ posts.meta.last_page }}
+                        </div>
+                        <Link
+                            :href="posts.links[posts.links.length - 1].url || ''"
+                            class="flex-1 px-4 py-2 text-center text-sm font-medium rounded-lg border border-[#19140015] dark:border-[#3E3E3A] transition-colors"
+                            :class="[
+                                !posts.links[posts.links.length - 1].url ? 'opacity-50 cursor-not-allowed bg-zinc-50 dark:bg-zinc-900/50' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                            ]"
+                        >
+                            <span v-html="posts.links[posts.links.length - 1].label"></span>
                         </Link>
                     </nav>
                 </div>

@@ -147,7 +147,7 @@ const togglePreview = () => {
     <Head title="Vytvořit článek" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main class="mx-auto max-w-md md:max-w-3xl lg:max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <div class="min-w-5xl mb-8 flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold tracking-tight">Vytvořit nový článek</h1>
