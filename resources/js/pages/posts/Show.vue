@@ -71,14 +71,12 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
     <!-- Header Image -->
     <section class="relative mt-6">
       <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div class="overflow-hidden rounded-2xl shadow-xl dark:shadow-red-900/10 border border-[#19140015] dark:border-[#3E3E3A]">
+        <div class="overflow-hidden rounded-2xl shadow-xl dark:shadow-red-900/10 border border-[#19140015] dark:border-[#3E3E3A] bg-[#FDFDFC] dark:bg-[#0a0a0a]">
           <img
-            v-if="post.image_url"
-            :src="post.image_url"
+            :src="post.image_url || '/images/placeholder.jpg'"
             :alt="post.title"
             class="aspect-[21/9] w-full object-cover"
           />
-          <div v-else class="aspect-[21/9] w-full bg-linear-to-br from-[#fff2f2] to-white dark:from-[#1D0002] dark:to-[#0a0a0a]" />
         </div>
       </div>
     </section>

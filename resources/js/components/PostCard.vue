@@ -22,13 +22,13 @@ defineProps<{
 
 <template>
     <article class="group relative flex flex-col items-start bg-white dark:bg-[#161615] rounded-2xl overflow-hidden border border-[#19140015] dark:border-[#3E3E3A] transition-all hover:shadow-lg dark:hover:shadow-2xl dark:hover:shadow-red-500/10">
-        <div class="relative w-full aspect-video overflow-hidden">
+        <div class="relative w-full aspect-video overflow-hidden bg-[#FDFDFC] dark:bg-[#0a0a0a]">
             <img
-                :src="post.image_url"
+                :src="post.image_url || '/images/placeholder.jpg'"
                 :alt="post.title"
                 class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
             />
-            <div class="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-t from-black/5 to-transparent"></div>
         </div>
 
         <div class="p-6 flex flex-col flex-1">

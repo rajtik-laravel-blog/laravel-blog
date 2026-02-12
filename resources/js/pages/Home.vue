@@ -91,12 +91,7 @@ defineProps<{
                         <PostCard
                             v-for="post in posts.data"
                             :key="post.id"
-                            :post="{
-                                ...post,
-                                image_url:
-                                    post.image_url ??
-                                    `https://picsum.photos/seed/${post.id}/800/600`,
-                            }"
+                            :post="post"
                         />
                     </div>
 

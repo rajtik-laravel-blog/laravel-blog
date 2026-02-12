@@ -146,11 +146,35 @@ marked.setOptions({
     gfm: true
 });
 
+// Normalize ATX headings so that `#Title` (without a space) is treated as a heading
+// This inserts a single space after 1–6 leading `#` when it's missing at the start of a line
+function normalizeATXHeadings(input: string): string {
+    // (^|\n) - start of string or newline
+    // (\s{0,3}) - up to 3 optional leading spaces (per CommonMark)
+    // (#{1,6}) - 1 to 6 hashes
+    // ([^#\s]) - a character that is NOT a hash and NOT a space (ensures we don't split hashes or double-space)
+    return input.replace(/(^|\n)(\s{0,3})(#{1,6})([^#\s])/g, '$1$2$3 $4');
+}
+
+// Normalize horizontal rules so they are always treated as HRs even without surrounding newlines
+function normalizeHRs(input: string): string {
+    // Matches ---, ***, or ___ on their own line (with optional trailing spaces)
+    // and ensures they have at least one empty line before them to avoid being seen as Setext heading underlines
+    // We use $2$2$2 to ensure we use the same character that was used in the match
+    return input.replace(/([^\n])\n\s*([-*_])\2{2,}\s*(\n|$)/g, '$1\n\n$2$2$2\n');
+}
+
 export function useMarkdown() {
     const renderMarkdown = (source: string) => {
+        // First, normalize headings such as `#Title` → `# Title` to support both forms
+        const normalized = normalizeATXHeadings(source);
+
+        // Normalize HRs to avoid Setext heading interpretation
+        const withHRs = normalizeHRs(normalized);
+
         // We use a small hack to ensure spaces are preserved if they are followed by a newline
         // but only if there are at least two spaces (standard Markdown)
-        const prepared = source.replace(/  +\n/g, '  <br>\n');
+        const prepared = withHRs.replace(/ {2,}\n/g, '  <br>\n');
 
         // @ts-expect-error - marked.parse can return a promise if async, but we use it synchronously
         const rendered = marked.parse(prepared, { async: false });

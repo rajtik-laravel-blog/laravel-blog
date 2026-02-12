@@ -39,7 +39,7 @@ class PostFactory extends Factory
             'slug' => \Illuminate\Support\Str::slug($title),
             'excerpt' => $this->faker->paragraph(),
             'content' => $content,
-            'image_url' => 'https://picsum.photos/seed/'.\Illuminate\Support\Str::random(10).'/1200/600',
+            'image_url' => null,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
