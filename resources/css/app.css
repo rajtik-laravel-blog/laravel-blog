@@ -216,7 +216,7 @@
     }
 
     .md-code {
-        @apply rounded bg-zinc-200 font-mono px-1 dark:bg-zinc-700;
+        @apply rounded bg-zinc-200 font-mono dark:bg-zinc-700;
     }
 
     .md-pre {
