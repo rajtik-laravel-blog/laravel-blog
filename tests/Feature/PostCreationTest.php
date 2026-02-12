@@ -3,21 +3,16 @@
 use App\Models\Post;
 use App\Models\User;
 
-test('only authors can access create post page', function () {
-    $user = User::factory()->create(['is_author' => false]);
-    $author = User::factory()->author()->create();
+test('authenticated users can access create post page', function () {
+    $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get(route('author.posts.create'))
-        ->assertStatus(403);
-
-    $this->actingAs($author)
         ->get(route('author.posts.create'))
         ->assertStatus(200);
 });
 
 test('author can create a post', function () {
-    $author = User::factory()->author()->create();
+    $author = User::factory()->create();
 
     $response = $this->actingAs($author)
         ->post(route('author.posts.store'), [
@@ -37,7 +32,7 @@ test('author can create a post', function () {
 });
 
 test('validation errors are returned in czech', function () {
-    $author = User::factory()->author()->create();
+    $author = User::factory()->create();
 
     $response = $this->actingAs($author)
         ->post(route('author.posts.store'), [

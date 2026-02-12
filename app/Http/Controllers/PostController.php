@@ -6,7 +6,6 @@ use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 use Inertia\Inertia;
-use Laravel\Fortify\Features;
 
 class PostController extends Controller
 {
@@ -26,19 +25,10 @@ class PostController extends Controller
             ->with(['author', 'tags'])
             ->firstOrFail();
 
-        // Paginate only root-level comments, including their users and nested replies with users
-        $comments = $post->comments()
-            ->whereNull('parent_id')
-            ->with(['user', 'replies.user'])
-            ->latest()
-            ->orderByDesc('id')
-            ->paginate(5)
-            ->withQueryString();
+        $post->increment('views_count');
 
         return Inertia::render('posts/Show', [
             'post' => $post,
-            'comments' => $comments,
-            'canRegister' => Features::enabled(Features::registration()),
         ]);
     }
 
@@ -63,7 +53,6 @@ class PostController extends Controller
         $query->orderByDesc('created_at')->orderByDesc('id');
 
         return Inertia::render('Home', [
-            'canRegister' => Features::enabled(Features::registration()),
             'posts' => $query->simplePaginate(9)->withQueryString(),
             'selectedTag' => $tagSlug ? Tag::where('slug', $tagSlug)->first() : null,
             'search' => (string) $searchQuery,

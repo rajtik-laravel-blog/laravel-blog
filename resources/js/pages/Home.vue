@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 import PostCard from '@/components/PostCard.vue';
+import BlogFooter from '@/components/BlogFooter.vue';
 import { home } from '@/routes';
 
 interface Post {
@@ -23,7 +24,6 @@ interface PaginatedPosts {
 }
 
 defineProps<{
-    canRegister: boolean;
     posts: PaginatedPosts;
     selectedTag?: { id: number; name: string; slug: string } | null;
 }>();
@@ -36,7 +36,7 @@ defineProps<{
         class="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]"
     >
         <!-- Top Bar -->
-        <BlogNavigation :can-register="canRegister" />
+        <BlogNavigation />
 
         <!-- Hero -->
         <section class="relative isolate">
@@ -139,17 +139,6 @@ defineProps<{
         </section>
 
         <!-- Footer -->
-        <footer
-            class="border-t border-[#19140015] py-10 text-center text-xs text-[#706f6c] dark:border-[#2a2a27] dark:text-[#A1A09A]"
-        >
-            <div class="mx-auto max-w-7xl px-6">
-                <p>
-                    Vytvořeno v
-                    <span class="font-medium text-[#f53003] dark:text-[#FF4433]"
-                        >Laravel</span
-                    > &copy; {{ new Date().getFullYear() }} by Vladislav Rajtmajer.
-                </p>
-            </div>
-        </footer>
+        <BlogFooter />
     </div>
 </template>

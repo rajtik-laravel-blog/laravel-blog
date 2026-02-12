@@ -21,16 +21,6 @@ class Post extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function rootComments()
-    {
-        return $this->hasMany(Comment::class)->whereNull('parent_id')->latest();
-    }
-
     /**
      * Get the human readable created at date.
      */

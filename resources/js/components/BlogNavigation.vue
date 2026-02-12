@@ -12,10 +12,10 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { dashboard, login, register, home, tags } from '@/routes';
+import { home, tags } from '@/routes';
 
 defineProps<{
-    canRegister?: boolean;
+    //
 }>();
 
 const page = usePage();
@@ -102,32 +102,6 @@ const clearSearch = () => {
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center gap-2 text-sm">
                 <AppearanceDropdown />
-                <template v-if="page.props.auth.user">
-                    <Link
-                        :href="dashboard()"
-                        class="inline-flex items-center gap-2 rounded-md border border-transparent px-3 py-1.5 text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#19140035] dark:hover:border-[#3E3E3A]"
-                    >
-                        <div class="size-6 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 ring-1 ring-black/5 dark:ring-white/10">
-                            {{ page.props.auth.user.initials }}
-                        </div>
-                        <span>Nástěnka</span>
-                    </Link>
-                </template>
-                <template v-else>
-                    <Link
-                        :href="login()"
-                        class="inline-flex items-center rounded-md border border-transparent px-3 py-1.5 text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#19140035] dark:hover:border-[#3E3E3A]"
-                    >
-                        Přihlásit se
-                    </Link>
-                    <Link
-                        v-if="canRegister"
-                        :href="register()"
-                        class="inline-flex items-center rounded-md border border-[#19140035] px-3 py-1.5 text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b]"
-                    >
-                        Registrovat se
-                    </Link>
-                </template>
             </nav>
 
             <!-- Mobile Navigation -->
@@ -183,29 +157,6 @@ const clearSearch = () => {
                             >
                                 Štítky
                             </Link>
-                            <hr class="border-[#19140015] dark:border-[#2a2a27]" />
-                            <Link
-                                v-if="page.props.auth.user"
-                                :href="dashboard()"
-                                class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] hover:text-[#f53003] dark:hover:text-[#FF4433]"
-                            >
-                                Nástěnka
-                            </Link>
-                            <template v-else>
-                                <Link
-                                    :href="login()"
-                                    class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] hover:text-[#f53003] dark:hover:text-[#FF4433]"
->
-                                Přihlásit se
-                                </Link>
-                                <Link
-                                    v-if="canRegister"
-                                    :href="register()"
-                                    class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] hover:text-[#f53003] dark:hover:text-[#FF4433]"
->
-                                Registrovat se
-                                </Link>
-                            </template>
                         </div>
                     </SheetContent>
                 </Sheet>

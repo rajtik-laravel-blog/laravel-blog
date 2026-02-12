@@ -22,6 +22,15 @@ test('landing page is rendered correctly', function () {
     );
 });
 
+test('privacy policy page is rendered correctly', function () {
+    $response = $this->get(route('privacy-policy'));
+
+    $response->assertOk();
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('PrivacyPolicy')
+    );
+});
+
 test('blog article page is rendered correctly', function () {
     $author = User::factory()->create(['name' => 'Author Name']);
     $post = Post::factory()->create([

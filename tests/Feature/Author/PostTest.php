@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 test('author can see their posts index', function () {
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
     $otherPost = Post::factory()->create();
     $authorPost = Post::factory()->create(['user_id' => $author->id]);
 
@@ -20,17 +20,15 @@ test('author can see their posts index', function () {
     // but the controller DOES filter: auth()->user()->posts()
 });
 
-test('non-author cannot see posts index', function () {
-    $user = User::factory()->create(['is_author' => false]);
+test('guest cannot see posts index', function () {
+    $response = $this->get(route('author.posts.index'));
 
-    $response = $this->actingAs($user)
-        ->get(route('author.posts.index'));
-
-    $response->assertStatus(403);
+    $response->assertStatus(302);
+    $response->assertRedirect(route('login'));
 });
 
 test('author can see create post page', function () {
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
 
     $response = $this->actingAs($author)
         ->get(route('author.posts.create'));
@@ -40,7 +38,7 @@ test('author can see create post page', function () {
 
 test('author can store new post', function () {
     Storage::fake('images');
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
 
     $response = $this->actingAs($author)
         ->post(route('author.posts.store'), [
@@ -62,7 +60,7 @@ test('author can store new post', function () {
 });
 
 test('author can see edit post page', function () {
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
     $post = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)
@@ -72,7 +70,7 @@ test('author can see edit post page', function () {
 });
 
 test('author cannot edit other authors post', function () {
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
     $otherPost = Post::factory()->create();
 
     $response = $this->actingAs($author)
@@ -83,7 +81,7 @@ test('author cannot edit other authors post', function () {
 
 test('author can update their post', function () {
     Storage::fake('images');
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
     $post = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)
@@ -106,7 +104,7 @@ test('author can update their post', function () {
 
 test('old image is deleted when new image is uploaded', function () {
     Storage::fake('images');
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
 
     // 1. Create a post with an initial image
     $initialFile = UploadedFile::fake()->image('initial.jpg');
@@ -139,7 +137,7 @@ test('old image is deleted when new image is uploaded', function () {
 });
 
 test('update post requires title and content', function () {
-    $author = User::factory()->create(['is_author' => true]);
+    $author = User::factory()->create([]);
     $post = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 import { home } from '@/routes';
 
@@ -10,7 +11,6 @@ defineProps<{
         slug: string;
         posts_count: number;
     }>;
-    canRegister?: boolean;
 }>();
 </script>
 
@@ -19,7 +19,7 @@ defineProps<{
 
     <div class="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
         <!-- Top Bar -->
-        <BlogNavigation :can-register="canRegister" />
+        <BlogNavigation />
 
         <main class="mx-auto max-w-7xl px-6 pt-16 sm:pt-20 lg:pt-24 pb-20">
             <div class="mx-auto max-w-3xl text-center mb-12">
@@ -57,12 +57,6 @@ defineProps<{
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-[#19140015] py-10 text-center text-xs text-[#706f6c] dark:border-[#2a2a27] dark:text-[#A1A09A]">
-            <div class="mx-auto max-w-7xl px-6">
-                <p>
-                    Vytvořeno pomocí <span class="font-medium text-[#f53003] dark:text-[#FF4433]">Laravelu</span>. Motiv kombinuje světlé a tmavé prvky v barvách loga Laravelu.
-                </p>
-            </div>
-        </footer>
+        <BlogFooter />
     </div>
 </template>

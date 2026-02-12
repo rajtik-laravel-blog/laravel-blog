@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { computed, onMounted, watch } from 'vue';
+import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
-import CommentSection from '@/components/CommentSection.vue';
 import { useMarkdown } from '@/composables/useMarkdown';
 import { home } from '@/routes';
 
@@ -18,22 +18,6 @@ interface Author {
   initials?: string;
 }
 
-interface User {
-  id: number;
-  name: string;
-  initials?: string;
-}
-
-interface Comment {
-  id: number;
-  content: string;
-  created_at: string;
-  created_at_human: string;
-  created_at_formatted: string;
-  user: User;
-  replies?: Comment[];
-}
-
 interface Post {
   id: number;
   title: string;
@@ -47,18 +31,8 @@ interface Post {
   tags?: Tag[];
 }
 
-interface PaginatedComments {
-  data: Comment[];
-  prev_page_url: string | null;
-  next_page_url: string | null;
-  current_page: number;
-  total: number;
-}
-
 const props = defineProps<{
   post: Post;
-  comments: PaginatedComments;
-  canRegister?: boolean;
 }>();
 
 const { renderMarkdown, highlightCode } = useMarkdown();
@@ -77,6 +51,7 @@ watch(htmlContent, () => {
 });
 
 const publishedDate = computed(() => props.post.created_at_human);
+const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
 </script>
 
 <template>
@@ -84,7 +59,7 @@ const publishedDate = computed(() => props.post.created_at_human);
 
   <div class="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
     <!-- Top Bar -->
-    <BlogNavigation :can-register="canRegister" />
+    <BlogNavigation />
 
     <!-- Back button -->
     <div class="mx-auto max-w-5xl px-4 pt-6 sm:px-6 lg:px-8">
@@ -135,21 +110,26 @@ const publishedDate = computed(() => props.post.created_at_human);
       </div>
 
       <!-- Content -->
-      <article class="mt-12 prose prose-zinc max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0">
+      <article class="mt-12 max-w-none">
         <div v-html="htmlContent" />
       </article>
 
-      <!-- Comments Section -->
-      <CommentSection
-        :post-id="post.id"
-        :comments="comments"
-        :can-register="canRegister"
-      />
+      <!-- Feedback -->
+      <div class="mt-16 rounded-2xl border border-[#19140015] dark:border-[#3E3E3A] bg-[#fffdfc] dark:bg-[#111111] p-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <p>
+          Našli jste v článku chybu nebo máte dotaz?
+          <a
+            :href="`mailto:${contactEmail}`"
+            class="font-medium text-[#f53003] hover:text-[#f53003]/80 dark:text-[#FF4433] dark:hover:text-[#FF4433]/80 transition-colors"
+          >
+            Napište mi e‑mail
+          </a>
+          a rád se na to podívám.
+        </p>
+      </div>
     </main>
 
     <!-- Footer -->
-    <footer class="mt-10 border-t border-[#1914001f] py-8 text-center text-sm text-zinc-500 dark:border-[#2a2a28] dark:text-zinc-400">
-      Vytvořeno pomocí Laravel + Inertia + Vue. Stylizováno v barvách Laravelu.
-    </footer>
+    <BlogFooter />
   </div>
 </template>

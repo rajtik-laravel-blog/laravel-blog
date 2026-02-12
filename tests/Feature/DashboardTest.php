@@ -17,6 +17,5 @@ test('authenticated users can visit the dashboard', function () {
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Dashboard')
         ->has('stats')
-        ->has('latestReplies')
     );
 });

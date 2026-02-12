@@ -17,10 +17,6 @@ class PostController extends Controller
 {
     public function index(Request $request): Response
     {
-        if (! auth()->user()->is_author) {
-            abort(403);
-        }
-
         $posts = auth()->user()->posts()
             ->with(['author', 'tags'])
             ->latest()
@@ -34,10 +30,6 @@ class PostController extends Controller
 
     public function create(): Response
     {
-        if (! auth()->user()->is_author) {
-            abort(403);
-        }
-
         return Inertia::render('author/posts/Create', [
             'tags' => Tag::all(),
         ]);
@@ -78,7 +70,7 @@ class PostController extends Controller
 
     public function edit(Post $post): Response
     {
-        if (! auth()->user()->is_author || $post->user_id !== auth()->id()) {
+        if ($post->user_id !== auth()->id()) {
             abort(403);
         }
 
