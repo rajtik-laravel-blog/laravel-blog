@@ -216,7 +216,7 @@
     }
 
     .md-code {
-        @apply rounded bg-zinc-100 font-mono text-sm dark:bg-zinc-800;
+        @apply rounded bg-zinc-200 font-mono px-1 dark:bg-zinc-700;
     }
 
     .md-pre {
@@ -225,6 +225,14 @@
 
     .md-hr {
         @apply my-8 border-t border-zinc-200 dark:border-zinc-800;
+    }
+
+    .md-strong {
+        @apply font-bold;
+    }
+
+    .md-em {
+        @apply italic;
     }
 
     .md-img {

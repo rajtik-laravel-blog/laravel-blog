@@ -134,38 +134,26 @@ renderer.tablecell = function (token: any) {
     return `<${tag} class="${cls}"${align}>${inner}</${tag}>`;
 };
 
-// Apply renderer globally
-marked.use({ renderer });
+marked.use({
+    renderer,
+    gfm: true,
+    breaks: true,
+});
+
+// @ts-expect-error - Custom options for marked
+marked.setOptions({
+    breaks: true,
+    gfm: true
+});
 
 export function useMarkdown() {
-    const normalizeMarkdown = (source: string) => {
-        if (!source) return '';
-
-        // 1. Ensure space after # for headings at the start of a line
-        // We use [^#\s] to ensure we only add a space if it's missing and not just more hashes
-        let normalized = source.replace(/^(\s*#{1,6})([^#\s])/gm, '$1 $2');
-
-        // 2. Handle the specific case where multiple headings are on the same line
-        // Example: "#Title ##Subtitle" -> "# Title\n\n## Subtitle"
-        normalized = normalized.split('\n').map(line => {
-            if (/^\s*#{1,6}\s+/.test(line)) {
-                // Find subsequent # markers that are preceded by space and NOT followed by space/#
-                return line.replace(/(\s+)(#{1,6})([^#\s])/g, (match, p1, p2, p3) => {
-                    return '\n\n' + p2 + ' ' + p3;
-                });
-            }
-            return line;
-        }).join('\n');
-
-        return normalized;
-    };
-
     const renderMarkdown = (source: string) => {
-        const normalized = normalizeMarkdown(source);
-        const rendered = marked.parse(normalized, {
-            gfm: true,
-            breaks: false,
-        });
+        // We use a small hack to ensure spaces are preserved if they are followed by a newline
+        // but only if there are at least two spaces (standard Markdown)
+        const prepared = source.replace(/  +\n/g, '  <br>\n');
+
+        // @ts-expect-error - marked.parse can return a promise if async, but we use it synchronously
+        const rendered = marked.parse(prepared, { async: false });
         return DOMPurify.sanitize(rendered as string);
     };
 
@@ -176,7 +164,6 @@ export function useMarkdown() {
     };
 
     return {
-        normalizeMarkdown,
         renderMarkdown,
         highlightCode,
     };

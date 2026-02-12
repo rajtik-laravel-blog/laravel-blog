@@ -319,7 +319,7 @@ const togglePreview = () => {
                             </span>
                         </div>
 
-                        <article class="prose prose-zinc mt-8 max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0">
+                        <article class="prose prose-zinc mt-8 max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0 prose-code:before:content-none prose-code:after:content-none">
                             <div v-html="htmlContent" />
                         </article>
                     </div>
