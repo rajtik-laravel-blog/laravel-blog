@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useAppearance } from '@/composables/useAppearance';
 import { Sun, Moon, Monitor, ArrowRight, Calendar, Clock, Tag, Menu, X, ChevronUp } from 'lucide-vue-next';
+import { ref, onMounted, onUnmounted } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { useAppearance } from '@/composables/useAppearance';
 
 const { appearance, updateAppearance } = useAppearance();
 

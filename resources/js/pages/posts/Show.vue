@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { Calendar } from 'lucide-vue-next';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 import ScrollToTop from '@/components/ScrollToTop.vue';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useMarkdown } from '@/composables/useMarkdown';
 import { home } from '@/routes';
 
@@ -38,19 +38,30 @@ const props = defineProps<{
   post: Post;
 }>();
 
-const { renderMarkdown, highlightCode } = useMarkdown();
+const { renderMarkdown } = useMarkdown();
+
+const htmlContent = ref('');
+const isRendering = ref(true);
+
+const updateHtmlContent = async () => {
+    const source = props.post.content ?? '';
+
+    isRendering.value = true;
+    htmlContent.value = '';
+
+    try {
+        htmlContent.value = await renderMarkdown(source);
+    } finally {
+        isRendering.value = false;
+    }
+};
 
 onMounted(() => {
-    highlightCode();
+    void updateHtmlContent();
 });
 
-// Markdown-to-HTML converter
-const htmlContent = computed(() => {
-    return renderMarkdown(props.post.content ?? '');
-});
-
-watch(htmlContent, () => {
-    highlightCode();
+watch(() => props.post.content, () => {
+    void updateHtmlContent();
 });
 
 const publishedDate = computed(() => props.post.created_at_human);
@@ -120,7 +131,24 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
 
       <!-- Content -->
       <article class="mt-12 max-w-none">
-        <div v-html="htmlContent" />
+        <div v-if="isRendering || !htmlContent" class="space-y-3">
+          <div class="text-sm text-zinc-500 dark:text-zinc-400">
+            Načítám obsah…
+          </div>
+          <div class="h-4 w-3/4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div class="h-4 w-full animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div class="h-4 w-11/12 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div class="h-4 w-4/5 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div class="h-4 w-2/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+
+          <!-- fake heading -->
+          <div class="mt-8 h-7 w-1/2 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+
+          <!-- fake code block skeleton -->
+          <div class="mt-6 h-28 w-full animate-pulse rounded-2xl bg-zinc-900/10 dark:bg-zinc-100/10" />
+        </div>
+
+        <div v-else v-html="htmlContent" />
       </article>
 
       <!-- Feedback -->

@@ -81,7 +81,9 @@ it('correctly renders horizontal rules, inside text', function () {
 
     $markdownContent = <<<'MARKDOWN'
 This is a [link to Laravel](https://laravel.com)
+
 ---
+
 Here is some `inline code`
 And code with ``double backticks``
 MARKDOWN;

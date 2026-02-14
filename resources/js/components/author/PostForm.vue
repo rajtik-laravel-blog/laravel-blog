@@ -21,7 +21,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit']);
 
-const { renderMarkdown, highlightCode } = useMarkdown();
+const { renderMarkdown } = useMarkdown();
 
 const imagePreview = ref<string | null>(props.form.image_url || null);
 
@@ -109,20 +109,22 @@ onUnmounted(() => {
     document.removeEventListener('mousedown', handleClickOutside);
 });
 
-const htmlContent = computed(() => {
-    return renderMarkdown(props.form.content || '');
-});
+const htmlContent = ref('');
 
-watch(htmlContent, () => {
+const updateHtmlContent = async () => {
+    htmlContent.value = await renderMarkdown(props.form.content || '');
+};
+
+watch(() => props.form.content, async () => {
     if (showPreview.value) {
-        highlightCode();
+        await updateHtmlContent();
     }
 });
 
-const togglePreview = () => {
+const togglePreview = async () => {
     showPreview.value = !showPreview.value;
     if (showPreview.value) {
-        highlightCode();
+        await updateHtmlContent();
     }
 };
 </script>
@@ -297,7 +299,7 @@ const togglePreview = () => {
                     </span>
                 </div>
 
-                <article class="prose prose-zinc mt-8 max-w-none dark:prose-invert prose-headings:text-[#1b1b18] dark:prose-headings:text-[#EDEDEC] prose-a:text-[#f53003] dark:prose-a:text-[#FF4433] prose-pre:bg-transparent prose-pre:p-0 prose-code:before:content-none prose-code:after:content-none">
+                <article class="mt-8 max-w-none">
                     <div v-html="htmlContent" />
                 </article>
             </div>

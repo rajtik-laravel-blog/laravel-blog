@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ArrowRight, Calendar, Clock, Tag } from 'lucide-vue-next';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 import PostCard from '@/components/PostCard.vue';
 import ScrollToTop from '@/components/ScrollToTop.vue';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { home } from '@/routes';
 import { show } from '@/routes/posts/index';
 
