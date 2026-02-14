@@ -99,14 +99,10 @@ defineProps<{
                         <div class="grid gap-0 lg:grid-cols-2">
                             <div class="relative overflow-hidden">
                                 <img
-                                    v-if="featuredPost.image_url"
-                                    :src="featuredPost.image_url"
+                                    :src="featuredPost.image_url || '/images/placeholder.jpg'"
                                     :alt="featuredPost.title"
                                     class="h-64 w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-full"
                                 />
-                                <div v-else class="h-64 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center lg:h-full">
-                                    <span class="text-gray-400">No image</span>
-                                </div>
                                 <div class="absolute top-4 left-4">
                                     <span
                                         class="rounded-lg bg-[#FF2D20] px-3 py-1 text-xs font-bold tracking-wide text-white uppercase"

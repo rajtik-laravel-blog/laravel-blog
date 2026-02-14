@@ -9,15 +9,15 @@ class DashboardController extends Controller
 {
     public function index(): Response
     {
-        $user = auth()->user();
-
-        $stats = [
-            'total_articles' => $user->posts()->count(),
-            'total_views' => $user->posts()->sum('views_count'),
-        ];
+        $posts = auth()->user()->posts()
+            ->with(['tags'])
+            ->select('id', 'title', 'slug', 'excerpt', 'image_url', 'views_count', 'is_published', 'created_at')
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Dashboard', [
-            'stats' => $stats,
+            'posts' => $posts,
         ]);
     }
 }

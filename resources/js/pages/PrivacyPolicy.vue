@@ -4,7 +4,7 @@ import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
 
 defineProps<{
-    //
+    [key: string]: never;
 }>();
 const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
 </script>

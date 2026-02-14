@@ -1,0 +1,31 @@
+
+   FAIL  Tests\Feature\BlogTest
+  ✓ landing page is rendered correctly                                   0.14s  
+  ✓ landing page with multiple posts is rendered correctly               0.01s  
+  ✓ privacy policy page is rendered correctly                            0.01s  
+  ✓ blog article page is rendered correctly                              0.01s  
+  ⨯ full text search works correctly                                     0.03s  
+  ✓ blog tags filtering works correctly                                  0.02s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\BlogTest > full text search works correctly            
+  Property [posts.data] was marked as invalid using a closure.
+Failed asserting that false is true.
+
+  at tests/Feature/BlogTest.php:88
+     84▕ 
+     85▕     $response->assertOk();
+     86▕     $response->assertInertia(fn (Assert $page) => $page
+     87▕         ->component('Home')
+  ➜  88▕         ->where('posts.data', function ($posts) {
+     89▕             if (count($posts) !== 1) {
+     90▕                 dump(collect($posts)->pluck('title')->all());
+     91▕             }
+     92▕             return count($posts) === 1;
+
+      [2m+2 vendor frames [22m
+  3   tests/Feature/BlogTest.php:86
+
+
+  Tests:    1 failed, 5 passed (113 assertions)
+  Duration: 0.25s
+

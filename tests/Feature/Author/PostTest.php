@@ -6,22 +6,20 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-test('author can see their posts index', function () {
+test('author can see their posts on dashboard', function () {
     $author = User::factory()->create([]);
     $otherPost = Post::factory()->create();
     $authorPost = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)
-        ->get(route('author.posts.index'));
+        ->get(route('dashboard'));
 
     $response->assertStatus(200);
     $response->assertSee($authorPost->title);
-    // It might see other posts if the controller doesn't filter,
-    // but the controller DOES filter: auth()->user()->posts()
 });
 
-test('guest cannot see posts index', function () {
-    $response = $this->get(route('author.posts.index'));
+test('guest cannot see dashboard', function () {
+    $response = $this->get(route('dashboard'));
 
     $response->assertStatus(302);
     $response->assertRedirect(route('login'));
@@ -49,7 +47,7 @@ test('author can store new post', function () {
             'image' => UploadedFile::fake()->image('newpost.jpg'),
         ]);
 
-    $response->assertRedirect(route('author.posts.index'));
+    $response->assertRedirect(route('dashboard'));
 
     $post = Post::where('title', 'New Post Title')->first();
     expect($post)->not->toBeNull();
@@ -93,7 +91,7 @@ test('author can update their post', function () {
             'image' => UploadedFile::fake()->image('post.jpg'),
         ]);
 
-    $response->assertRedirect(route('author.posts.index'));
+    $response->assertRedirect(route('dashboard'));
 
     $post->refresh();
     expect($post->title)->toBe('Updated Title');
@@ -126,7 +124,7 @@ test('old image is deleted when new image is uploaded', function () {
             'image' => $newFile,
         ]);
 
-    $response->assertRedirect(route('author.posts.index'));
+    $response->assertRedirect(route('dashboard'));
 
     // 3. Verify old image is deleted and new one exists
     Storage::disk('images')->assertMissing($initialPath);

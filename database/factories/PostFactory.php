@@ -39,8 +39,14 @@ class PostFactory extends Factory
             'slug' => \Illuminate\Support\Str::slug($title),
             'excerpt' => $this->faker->paragraph(),
             'content' => $content,
+            'is_published' => true,
             'image_url' => null,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
+    }
+
+    public function published(): Factory
+    {
+        return $this->state(fn (array $attributes) => ['is_published' => true]);
     }
 }

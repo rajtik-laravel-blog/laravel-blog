@@ -19,9 +19,15 @@ test('viewing a post increments its views_count', function () {
 
 test('dashboard displays total views for authenticated users', function () {
     $user = User::factory()->create([]);
-    Post::factory()->count(3)->create([
+    Post::factory()->create([
+        'user_id' => $user->id,
+        'views_count' => 30,
+        'created_at' => now(),
+    ]);
+    Post::factory()->create([
         'user_id' => $user->id,
         'views_count' => 10,
+        'created_at' => now()->subDay(),
     ]);
 
     $response = $this->actingAs($user)->get(route('dashboard'));
@@ -29,7 +35,7 @@ test('dashboard displays total views for authenticated users', function () {
     $response->assertOk();
     $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
         ->component('Dashboard')
-        ->where('stats.total_views', 30)
+        ->where('posts.data.0.views_count', 30)
     );
 });
 
@@ -41,6 +47,6 @@ test('dashboard displays 0 views for user with no posts', function () {
     $response->assertOk();
     $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
         ->component('Dashboard')
-        ->where('stats.total_views', 0)
+        ->has('posts.data', 0)
     );
 });

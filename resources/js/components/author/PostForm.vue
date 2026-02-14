@@ -45,6 +45,11 @@ const handleImageChange = (e: Event) => {
     }
 };
 
+const removeImage = () => {
+    imagePreview.value = null;
+    emit('update:image', null);
+};
+
 const tagInput = ref('');
 const isDropdownOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
@@ -152,7 +157,8 @@ const togglePreview = async () => {
                     <Label for="title">Nadpis</Label>
                     <Input
                         id="title"
-                        v-model="form.title"
+                        :model-value="form.title"
+                        @update:model-value="$emit('update:title', $event)"
                         placeholder="Zadejte název článku..."
                         :class="{ 'border-red-500': form.errors.title }"
                     />
@@ -163,7 +169,8 @@ const togglePreview = async () => {
                     <Label for="excerpt">Stručný výtah (nepovinné)</Label>
                     <Textarea
                         id="excerpt"
-                        v-model="form.excerpt"
+                        :model-value="form.excerpt"
+                        @update:model-value="$emit('update:excerpt', $event)"
                         placeholder="Krátký popis, který se zobrazí v seznamu článků..."
                         rows="2"
                         :class="{ 'border-red-500': form.errors.excerpt }"
@@ -181,7 +188,7 @@ const togglePreview = async () => {
                     <img :src="imagePreview" class="h-full w-full object-cover" />
                     <button
                         type="button"
-                        @click="imagePreview = null; form.image = null"
+                        @click="removeImage"
                         class="absolute right-2 top-2 rounded-full bg-black/50 p-1 text-white hover:bg-black/70"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -221,7 +228,8 @@ const togglePreview = async () => {
                 </div>
                 <Textarea
                     id="content"
-                    v-model="form.content"
+                    :model-value="form.content"
+                    @update:model-value="$emit('update:content', $event)"
                     placeholder="Zde napište svůj článek..."
                     rows="15"
                     class="font-mono text-sm leading-relaxed"

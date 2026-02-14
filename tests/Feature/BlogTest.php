@@ -75,18 +75,18 @@ test('blog article page is rendered correctly', function () {
 });
 
 test('full text search works correctly', function () {
-    Post::factory()->create(['title' => 'Laravel Framework', 'content' => 'The best PHP framework']);
+    Post::factory()->create(['title' => 'UniqueTitleOne', 'content' => 'The best PHP framework']);
     Post::factory()->create(['title' => 'Vue.js', 'content' => 'Progressive JavaScript Framework']);
     Post::factory()->create(['title' => 'Tailwind CSS', 'content' => 'Utility-first CSS framework']);
 
-    // Search for "Laravel"
-    $response = $this->get(route('home', ['search' => 'Laravel']));
+    // Search for "UniqueTitleOne"
+    $response = $this->get(route('home', ['search' => 'UniqueTitleOne']));
 
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
         ->has('posts.data', 1)
-        ->where('posts.data.0.title', 'Laravel Framework')
+        ->where('posts.data.0.title', 'UniqueTitleOne')
     );
 
     // Search for "framework"

@@ -3,7 +3,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import PostForm from '@/components/author/PostForm.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as authorPosts, store as storePost } from '@/routes/author/posts';
+import { store as storePost } from '@/routes/author/posts';
 import { type BreadcrumbItem } from '@/types';
 
 defineProps<{
@@ -14,10 +14,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Nástěnka',
         href: dashboard().url,
-    },
-    {
-        title: 'Moje články',
-        href: authorPosts().url,
     },
     {
         title: 'Vytvořit článek',
@@ -49,10 +45,13 @@ const submit = () => {
             <PostForm
                 :form="form"
                 :all-tags="tags"
-                submit-label="Publikovat článek"
+                submit-label="Uložit článek"
                 @submit="submit"
                 @update:image="form.image = $event"
                 @update:tags="form.tags = $event"
+                @update:title="form.title = $event"
+                @update:excerpt="form.excerpt = $event"
+                @update:content="form.content = $event"
             >
                 <template #header>
                     <h1 class="text-3xl font-bold tracking-tight">Vytvořit nový článek</h1>

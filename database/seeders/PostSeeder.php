@@ -19,7 +19,8 @@ class PostSeeder extends Seeder
 
         \App\Models\Post::factory(30)
             ->recycle($user)
-            ->create()
+            ->published()
+            ->create(['image_url' => fn (): string => 'https://picsum.photos/seed/'.\Illuminate\Support\Str::random(10).'/1200/600'])
             ->each(function ($post) use ($tags) {
                 $post->tags()->attach(
                     $tags->random(rand(2, 4))->pluck('id')->toArray()

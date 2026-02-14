@@ -15,11 +15,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Author routes
     Route::prefix('author')->name('author.')->group(function () {
-        Route::get('/posts', [\App\Http\Controllers\Author\PostController::class, 'index'])->name('posts.index');
         Route::get('/posts/create', [\App\Http\Controllers\Author\PostController::class, 'create'])->name('posts.create');
         Route::post('/posts', [\App\Http\Controllers\Author\PostController::class, 'store'])->name('posts.store');
         Route::get('/posts/{post}/edit', [\App\Http\Controllers\Author\PostController::class, 'edit'])->name('posts.edit');
         Route::post('/posts/{post}', [\App\Http\Controllers\Author\PostController::class, 'update'])->name('posts.update');
+        Route::patch('/posts/{post}/toggle-publish', [\App\Http\Controllers\Author\PostController::class, 'togglePublish'])->name('posts.toggle-publish');
     });
 });
 

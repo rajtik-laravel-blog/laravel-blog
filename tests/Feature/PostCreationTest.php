@@ -28,7 +28,7 @@ test('author can create a post', function () {
     expect($post->user_id)->toBe($author->id);
     expect($post->tags)->toHaveCount(2);
 
-    $response->assertRedirect(route('author.posts.index'));
+    $response->assertRedirect(route('dashboard'));
 });
 
 test('validation errors are returned in czech', function () {

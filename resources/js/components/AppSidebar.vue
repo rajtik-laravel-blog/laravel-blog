@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, FileText } from 'lucide-vue-next';
+import { LayoutGrid } from 'lucide-vue-next';
 import { computed } from 'vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -15,7 +15,6 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { index as authorPosts } from '@/routes/author/posts';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
 
@@ -25,11 +24,6 @@ const mainNavItems = computed((): NavItem[] => {
             title: 'Nástěnka',
             href: dashboard(),
             icon: LayoutGrid,
-        },
-        {
-            title: 'Moje články',
-            href: authorPosts(),
-            icon: FileText,
         },
     ];
 });

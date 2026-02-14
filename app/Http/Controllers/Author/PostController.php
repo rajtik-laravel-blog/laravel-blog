@@ -7,7 +7,6 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -15,19 +14,6 @@ use Inertia\Response;
 
 class PostController extends Controller
 {
-    public function index(Request $request): Response
-    {
-        $posts = auth()->user()->posts()
-            ->with(['author', 'tags'])
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
-
-        return Inertia::render('author/posts/Index', [
-            'posts' => $posts,
-        ]);
-    }
-
     public function create(): Response
     {
         return Inertia::render('author/posts/Create', [
@@ -45,6 +31,7 @@ class PostController extends Controller
         $post->excerpt = $validated['excerpt'];
         $post->content = $validated['content'];
         $post->user_id = auth()->id();
+        $post->is_published = false;
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('posts', 'images');
@@ -65,7 +52,7 @@ class PostController extends Controller
             $post->tags()->sync($tagIds);
         }
 
-        return redirect()->route('author.posts.index')->with('success', 'Článek byl úspěšně vytvořen.');
+        return redirect()->route('dashboard')->with('success', 'Článek byl úspěšně vytvořen.');
     }
 
     public function edit(Post $post): Response
@@ -119,6 +106,20 @@ class PostController extends Controller
             $post->tags()->detach();
         }
 
-        return redirect()->route('author.posts.index')->with('success', 'Článek byl úspěšně aktualizován.');
+        return redirect()->route('dashboard')->with('success', 'Článek byl úspěšně aktualizován.');
+    }
+
+    public function togglePublish(Post $post): RedirectResponse
+    {
+        if ($post->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $post->is_published = ! $post->is_published;
+        $post->save();
+
+        $status = $post->is_published ? 'publikován' : 'stažen z publikace';
+
+        return redirect()->back()->with('success', "Článek byl úspěšně {$status}.");
     }
 }

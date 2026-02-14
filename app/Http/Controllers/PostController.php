@@ -21,7 +21,8 @@ class PostController extends Controller
 
     public function show(string $slug)
     {
-        $post = Post::where('slug', $slug)
+        $post = Post::published()
+            ->where('slug', $slug)
             ->with(['author', 'tags'])
             ->firstOrFail();
 
@@ -37,12 +38,12 @@ class PostController extends Controller
         $tagSlug = $request->query('tag');
         $searchQuery = $request->query('search');
 
-        $featuredPost = Post::with(['author', 'tags'])->latest()->first();
+        $featuredPost = Post::published()->with(['author', 'tags'])->latest()->first();
 
         if ($searchQuery) {
-            $query = Post::search($searchQuery)->query(fn ($q) => $q->with(['author', 'tags']));
+            $query = Post::search($searchQuery)->query(fn ($q) => $q->published()->with(['author', 'tags']));
         } else {
-            $query = Post::with(['author', 'tags'])->latest();
+            $query = Post::published()->with(['author', 'tags'])->latest();
         }
 
         if ($tagSlug && ! $searchQuery) {

@@ -11,6 +11,10 @@ class Post extends Model
     /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory, Searchable;
 
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -19,6 +23,11 @@ class Post extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
     }
 
     /**
@@ -59,5 +68,13 @@ class Post extends Model
             'excerpt' => $this->excerpt,
             'content' => $this->content,
         ];
+    }
+
+    /**
+     * Determine if the model should be searchable.
+     */
+    public function shouldBeSearchable(): bool
+    {
+        return $this->is_published;
     }
 }

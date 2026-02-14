@@ -1,18 +1,35 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import { FileText, Eye } from 'lucide-vue-next';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { FileText, Eye, Edit2, Send, RotateCcw } from 'lucide-vue-next';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { create as createPost, edit as editPost, togglePublish as togglePublishRoute } from '@/routes/author/posts';
+import { show as showPost } from '@/routes/posts';
 import { type BreadcrumbItem } from '@/types';
 
-interface Stats {
-    total_articles: number;
-    total_views: number;
+interface Post {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string;
+    image_url: string | null;
+    views_count: number;
+    is_published: boolean;
+    created_at: string;
+    tags: Array<{ id: number; name: string; slug: string }>;
 }
 
-defineProps<{
-    stats: Stats;
-}>();
+interface Props {
+    posts: {
+        data: Post[];
+        links: any[];
+        meta: any;
+    };
+}
+
+defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,6 +37,20 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
+
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('cs-CZ', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
+const togglePublish = (post: Post) => {
+    router.patch(togglePublishRoute(post.id).url, {}, {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -27,30 +58,145 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-8 p-4 md:p-8">
-            <!-- Stats Grid -->
-            <div class="grid gap-4 md:grid-cols-2">
-                <div class="rounded-xl border border-[#19140015] bg-white p-6 shadow-sm dark:border-[#3E3E3A] dark:bg-[#161615]">
-                    <div class="flex items-center gap-4">
-                        <div class="flex size-12 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
-                            <FileText class="size-6" />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-zinc-500">Moje články</p>
-                            <h3 class="text-2xl font-bold">{{ stats.total_articles }}</h3>
-                        </div>
-                    </div>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-[#1b1b18] dark:text-[#EDEDEC]">Správa článků</h1>
+                    <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Přehled a správa všech vašich publikovaných článků.</p>
+                </div>
+                <Button as-child>
+                    <Link :href="createPost().url">Vytvořit nový článek</Link>
+                </Button>
+            </div>
+
+            <div class="overflow-hidden rounded-xl border border-[#19140015] bg-white shadow-sm dark:border-[#3E3E3A] dark:bg-[#161615]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="border-b border-[#19140015] bg-[#19140005] dark:border-[#3E3E3A] dark:bg-[#ffffff05]">
+                            <tr>
+                                <th class="px-6 py-4 font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">Článek</th>
+                                <th class="hidden px-6 py-4 font-semibold text-[#1b1b18] dark:text-[#EDEDEC] sm:table-cell">Stav</th>
+                                <th class="hidden px-6 py-4 font-semibold text-[#1b1b18] dark:text-[#EDEDEC] sm:table-cell">Štítky</th>
+                                <th class="hidden px-6 py-4 font-semibold text-[#1b1b18] dark:text-[#EDEDEC] md:table-cell text-center">Zobrazení</th>
+                                <th class="hidden px-6 py-4 font-semibold text-[#1b1b18] dark:text-[#EDEDEC] md:table-cell">Datum</th>
+                                <th class="px-6 py-4 text-right font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#19140015] dark:divide-[#3E3E3A]">
+                            <tr v-for="post in posts.data" :key="post.id" class="group hover:bg-[#19140003] dark:hover:bg-[#ffffff03]">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div v-if="post.image_url" class="hidden h-12 w-20 overflow-hidden rounded-md border border-[#19140015] dark:border-[#3E3E3A] sm:block">
+                                            <img :src="post.image_url" class="h-full w-full object-cover" />
+                                        </div>
+                                        <div v-else class="hidden h-12 w-20 items-center justify-center rounded-md bg-[#19140008] dark:bg-[#ffffff08] sm:flex">
+                                            <FileText class="size-4 text-zinc-400" />
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-[#1b1b18] dark:text-[#EDEDEC]">{{ post.title }}</div>
+                                            <div class="mt-1 text-xs text-zinc-500 line-clamp-1 max-w-[200px] sm:max-w-xs">{{ post.excerpt }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="hidden px-6 py-4 sm:table-cell">
+                                    <Badge v-if="post.is_published" variant="secondary" class="bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400">
+                                        Publikováno
+                                    </Badge>
+                                    <Badge v-else variant="secondary" class="bg-yellow-100 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                        Koncept
+                                    </Badge>
+                                </td>
+                                <td class="hidden px-6 py-4 sm:table-cell">
+                                    <div class="flex flex-wrap gap-1">
+                                        <Badge v-for="tag in post.tags" :key="tag.id" variant="secondary" class="text-[10px] px-1.5 py-0 bg-zinc-100 dark:bg-zinc-800">
+                                            {{ tag.name }}
+                                        </Badge>
+                                    </div>
+                                </td>
+                                <td class="hidden px-6 py-4 text-center text-zinc-500 md:table-cell">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <Eye class="size-3.5" />
+                                        {{ post.views_count }}
+                                    </div>
+                                </td>
+                                <td class="hidden px-6 py-4 text-zinc-500 md:table-cell">
+                                    {{ formatDate(post.created_at) }}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            @click="togglePublish(post)"
+                                            :title="post.is_published ? 'Zrušit publikaci' : 'Publikovat'"
+                                            class="text-zinc-500 hover:text-[#f53003] dark:hover:text-[#FF4433]"
+                                        >
+                                            <RotateCcw v-if="post.is_published" class="size-4" />
+                                            <Send v-else class="size-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" as-child title="Zobrazit" :disabled="!post.is_published" :class="{'opacity-50 pointer-events-none': !post.is_published}">
+                                            <Link :href="showPost(post.slug).url">
+                                                <Eye class="size-4" />
+                                            </Link>
+                                        </Button>
+                                        <Button variant="ghost" size="icon" as-child title="Upravit">
+                                            <Link :href="editPost(post.id).url">
+                                                <Edit2 class="size-4" />
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr v-if="posts.data.length === 0">
+                                <td colspan="5" class="px-6 py-12 text-center text-zinc-500">
+                                    Zatím jste nenapsali žádný článek.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="rounded-xl border border-[#19140015] bg-white p-6 shadow-sm dark:border-[#3E3E3A] dark:bg-[#161615]">
-                    <div class="flex items-center gap-4">
-                        <div class="flex size-12 items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400">
-                            <Eye class="size-6" />
+                <!-- Pagination -->
+                <div v-if="posts.meta && posts.meta.last_page > 1" class="border-t border-[#19140015] px-6 py-4 dark:border-[#3E3E3A]">
+                    <!-- Desktop Pagination -->
+                    <nav class="hidden sm:flex items-center justify-center gap-2">
+                        <Link
+                            v-for="link in posts.links"
+                            :key="link.label"
+                            :href="link.url || ''"
+                            class="px-3 py-1 text-sm rounded-md transition-colors"
+                            :class="[
+                                link.active ? 'bg-[#f53003] text-white' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+                                !link.url ? 'opacity-50 cursor-not-allowed' : ''
+                            ]"
+                        >
+                            <span v-html="link.label"></span>
+                        </Link>
+                    </nav>
+
+                    <!-- Mobile Pagination -->
+                    <nav class="flex sm:hidden items-center justify-between gap-2">
+                        <Link
+                            :href="posts.links[0].url || ''"
+                            class="flex-1 px-4 py-2 text-center text-sm font-medium rounded-lg border border-[#19140015] dark:border-[#3E3E3A] transition-colors"
+                            :class="[
+                                !posts.links[0].url ? 'opacity-50 cursor-not-allowed bg-zinc-50 dark:bg-zinc-900/50' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                            ]"
+                        >
+                            <span v-html="posts.links[0].label"></span>
+                        </Link>
+                        <div class="px-4 text-xs font-medium text-zinc-500">
+                            {{ posts.meta.current_page }} / {{ posts.meta.last_page }}
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-zinc-500">Celkem zobrazení</p>
-                            <h3 class="text-2xl font-bold">{{ stats.total_views }}</h3>
-                        </div>
-                    </div>
+                        <Link
+                            :href="posts.links[posts.links.length - 1].url || ''"
+                            class="flex-1 px-4 py-2 text-center text-sm font-medium rounded-lg border border-[#19140015] dark:border-[#3E3E3A] transition-colors"
+                            :class="[
+                                !posts.links[posts.links.length - 1].url ? 'opacity-50 cursor-not-allowed bg-zinc-50 dark:bg-zinc-900/50' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                            ]"
+                        >
+                            <span v-html="posts.links[posts.links.length - 1].label"></span>
+                        </Link>
+                    </nav>
                 </div>
             </div>
         </div>
