@@ -1,0 +1,22 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/vladislav_rajtmajer/Library/Application",
+            "args": [
+                "Support/Herd/bin/php84",
+                "/Users/vladislav_rajtmajer/PhpstormProjects/laravel-blog/artisan",
+                "boost:mcp"
+            ]
+        },
+        "herd": {
+            "command": "/Users/vladislav_rajtmajer/Library/Application",
+            "args": [
+                "Support/Herd/bin/php84",
+                "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+            ],
+            "env": {
+                "SITE_PATH": "/Users/vladislav_rajtmajer/PhpstormProjects/laravel-blog"
+            }
+        }
+    }
+}

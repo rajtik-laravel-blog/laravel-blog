@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { computed, onMounted, watch } from 'vue';
 import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
+import ScrollToTop from '@/components/ScrollToTop.vue';
 import { useMarkdown } from '@/composables/useMarkdown';
 import { home } from '@/routes';
 
@@ -62,7 +63,7 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
     <BlogNavigation />
 
     <!-- Back button -->
-    <div class="mx-auto max-w-5xl px-4 pt-6 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
       <Link :href="home().url" class="inline-flex items-center gap-2 text-sm text-[#f53003] hover:text-[#f53003]/80 transition-colors dark:text-[#FF4433] dark:hover:text-[#FF4433]/80">
         ← Zpět na všechny články
       </Link>
@@ -70,7 +71,7 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
 
     <!-- Header Image -->
     <section class="relative mt-6">
-      <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <div class="overflow-hidden rounded-2xl shadow-xl dark:shadow-red-900/10 border border-[#19140015] dark:border-[#3E3E3A] bg-[#FDFDFC] dark:bg-[#0a0a0a]">
           <img
             :src="post.image_url || '/images/placeholder.jpg'"
@@ -82,7 +83,7 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
     </section>
 
     <!-- Article Content -->
-    <main class="mx-auto w-full max-w-4xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
+    <main class="mx-auto w-full max-w-5xl px-4 pb-24 pt-8 sm:px-6 lg:px-8">
       <!-- Title -->
       <h1 class="mb-6 text-balance text-3xl font-bold tracking-tight sm:text-6xl">{{ post.title }}</h1>
       <!-- Meta: author, date, tags -->
@@ -129,5 +130,8 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
 
     <!-- Footer -->
     <BlogFooter />
+
+    <!-- Scroll to Top -->
+    <ScrollToTop />
   </div>
 </template>

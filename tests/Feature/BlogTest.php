@@ -15,10 +15,31 @@ test('landing page is rendered correctly', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Home')
-        ->has('posts.data', 1)
-        ->where('posts.data.0.title', 'Landing Page Test Post')
-        ->has('posts.data.0.tags', 1)
-        ->where('posts.data.0.tags.0.name', 'TestTag')
+        ->has('featuredPost', fn (Assert $page) => $page
+            ->where('title', 'Landing Page Test Post')
+            ->has('tags', 1)
+            ->where('tags.0.name', 'TestTag')
+            ->etc()
+        )
+        ->has('posts.data', 0)
+    );
+});
+
+test('landing page with multiple posts is rendered correctly', function () {
+    $posts = Post::factory()->count(3)->create()->sortByDesc('created_at')->values();
+    $latestPost = $posts[0];
+
+    $response = $this->get(route('home'));
+
+    $response->assertOk();
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('Home')
+        ->has('featuredPost', fn (Assert $page) => $page
+            ->where('id', $latestPost->id)
+            ->where('title', $latestPost->title)
+            ->etc()
+        )
+        ->has('posts.data', 2)
     );
 });
 

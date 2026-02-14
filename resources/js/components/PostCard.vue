@@ -2,6 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { home } from '@/routes';
+import { show } from '@/routes/posts/index';
 
 defineProps<{
     post: {
@@ -48,7 +49,7 @@ defineProps<{
             </div>
 
             <h2 class="text-xl font-semibold mb-2 text-[#1b1b18] dark:text-[#EDEDEC] group-hover:text-[#f53003] dark:group-hover:text-[#FF4433] transition-colors leading-tight">
-                <Link :href="'/posts/' + post.slug">
+                <Link :href="show({ slug: post.slug }).url">
                     <span class="absolute inset-0"></span>
                     {{ post.title }}
                 </Link>

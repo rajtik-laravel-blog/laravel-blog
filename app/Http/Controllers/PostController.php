@@ -37,6 +37,8 @@ class PostController extends Controller
         $tagSlug = $request->query('tag');
         $searchQuery = $request->query('search');
 
+        $featuredPost = Post::with(['author', 'tags'])->latest()->first();
+
         if ($searchQuery) {
             $query = Post::search($searchQuery)->query(fn ($q) => $q->with(['author', 'tags']));
         } else {
@@ -49,11 +51,16 @@ class PostController extends Controller
             });
         }
 
+        if ($featuredPost && ! $searchQuery && ! $tagSlug) {
+            $query->where('id', '!=', $featuredPost->id);
+        }
+
         // Ensure deterministic ordering
         $query->orderByDesc('created_at')->orderByDesc('id');
 
         return Inertia::render('Home', [
             'posts' => $query->simplePaginate(9)->withQueryString(),
+            'featuredPost' => $featuredPost,
             'selectedTag' => $tagSlug ? Tag::where('slug', $tagSlug)->first() : null,
             'search' => (string) $searchQuery,
         ]);

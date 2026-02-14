@@ -1,9 +1,10 @@
 {
     "agents": [
-        "junie"
+        "junie",
+        "claude_code"
     ],
     "guidelines": true,
-    "herd_mcp": false,
+    "herd_mcp": true,
     "mcp": true,
     "packages": [
         "laravel/fortify"
