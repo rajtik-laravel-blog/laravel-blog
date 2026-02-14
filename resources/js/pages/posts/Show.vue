@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import { Calendar } from 'lucide-vue-next';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { computed, onMounted, watch } from 'vue';
 import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
@@ -88,23 +90,31 @@ const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
       <h1 class="mb-6 text-balance text-3xl font-bold tracking-tight sm:text-6xl">{{ post.title }}</h1>
       <!-- Meta: author, date, tags -->
       <div class="mb-8 flex flex-wrap items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-        <span v-if="post.author" class="inline-flex items-center gap-2">
-          <div class="size-6 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 ring-1 ring-black/5 dark:ring-white/10 shrink-0">
-            {{ post.author.initials }}
-          </div>
-          <span class="font-medium">{{ post.author.name }}</span>
-        </span>
-        <span class="h-1 w-1 rounded-full bg-zinc-400/70" />
-        <time :datetime="post.created_at">{{ publishedDate }}</time>
+        <TooltipProvider :delay-duration="0">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <time :datetime="post.created_at" class="flex items-center gap-1.5 cursor-default">
+                <Calendar class="size-3.5" />
+                {{ publishedDate }}
+              </time>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span class="text-xs">{{ post.created_at_formatted }}</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <template v-if="post.tags?.length">
-          <span class="h-1 w-1 rounded-full bg-zinc-400/70" />
-          <ul class="flex flex-wrap items-center gap-2">
-            <li v-for="tag in post.tags" :key="tag.id">
-              <Link :href="home({ query: { tag: tag.slug } }).url" class="inline-flex items-center rounded-full border border-[#19140035] px-2.5 py-0.5 text-xs text-zinc-700 dark:border-[#3E3E3A] dark:text-zinc-300 hover:border-[#f53003] hover:text-[#f53003] dark:hover:border-[#FF4433] dark:hover:text-[#FF4433] transition-colors">
-                #{{ tag.name }}
-              </Link>
-            </li>
-          </ul>
+          <div class="flex flex-wrap items-center gap-2">
+            <Link
+              v-for="tag in post.tags"
+              :key="tag.id"
+              :href="home({ query: { tag: tag.slug } }).url"
+              class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 hover:bg-[#f53003]/10 hover:text-[#f53003] dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-[#FF4433]/10 dark:hover:text-[#FF4433] transition-colors"
+            >
+              #{{ tag.name }}
+            </Link>
+          </div>
         </template>
       </div>
 

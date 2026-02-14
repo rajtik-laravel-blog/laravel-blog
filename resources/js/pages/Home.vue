@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ArrowRight, Calendar, Clock, Tag } from 'lucide-vue-next';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import BlogFooter from '@/components/BlogFooter.vue';
 import BlogNavigation from '@/components/BlogNavigation.vue';
@@ -116,10 +117,19 @@ defineProps<{
                             </div>
                             <div class="flex flex-col justify-center p-8 lg:p-12">
                                 <div class="mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <span class="inline-flex items-center gap-1.5">
-                                        <Calendar class="size-3.5" />
-                                        {{ featuredPost.created_at_human }}
-                                    </span>
+                                    <TooltipProvider :delay-duration="0">
+                                        <Tooltip>
+                                            <TooltipTrigger as-child>
+                                                <span class="inline-flex items-center gap-1.5 cursor-default relative z-10">
+                                                    <Calendar class="size-3.5" />
+                                                    {{ featuredPost.created_at_human }}
+                                                </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <span class="text-xs">{{ featuredPost.created_at_formatted }}</span>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                     <span v-if="featuredPost.read_time" class="inline-flex items-center gap-1.5">
                                         <Clock class="size-3.5" />
                                         {{ featuredPost.read_time }}
@@ -131,6 +141,18 @@ defineProps<{
                                         <Tag class="size-3" />
                                         {{ featuredPost.category }}
                                     </span>
+                                    <template v-if="featuredPost.tags?.length">
+                                        <div class="relative z-10 flex flex-wrap gap-2">
+                                            <Link
+                                                v-for="tag in featuredPost.tags"
+                                                :key="tag.id"
+                                                :href="home({ query: { tag: tag.slug } }).url"
+                                                class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 hover:bg-[#f53003]/10 hover:text-[#f53003] dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-[#FF4433]/10 dark:hover:text-[#FF4433] transition-colors"
+                                            >
+                                                #{{ tag.name }}
+                                            </Link>
+                                        </div>
+                                    </template>
                                 </div>
                                 <h2
                                     class="mb-4 text-2xl leading-tight font-bold text-gray-900 transition-colors group-hover:text-[#FF2D20] lg:text-3xl dark:text-white"
@@ -145,11 +167,11 @@ defineProps<{
                                 </p>
                                 <Link
                                     :href="show({ slug: featuredPost.slug }).url"
-                                    class="group/link inline-flex items-center gap-2 text-sm font-semibold text-[#FF2D20] transition-colors hover:text-[#e52a1e]"
+                                    class="inline-flex items-center gap-2 text-sm font-semibold text-[#FF2D20] transition-colors hover:text-[#e52a1e]"
                                 >
-                                    Číst dále
+                                    Číst dál
                                     <ArrowRight
-                                        class="size-4 transition-transform group-hover/link:translate-x-1"
+                                        class="size-4 transition-transform group-hover:translate-x-1"
                                     />
                                 </Link>
                             </div>

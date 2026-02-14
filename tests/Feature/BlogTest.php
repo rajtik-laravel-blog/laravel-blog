@@ -69,7 +69,6 @@ test('blog article page is rendered correctly', function () {
         ->has('post', fn (Assert $page) => $page
             ->where('title', 'Article Page Test')
             ->where('content', 'Test Content')
-            ->where('author.name', 'Author Name')
             ->etc()
         )
     );

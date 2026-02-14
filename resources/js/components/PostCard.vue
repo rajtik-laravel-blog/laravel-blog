@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import {ArrowRight, Calendar} from 'lucide-vue-next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { home } from '@/routes';
 import { show } from '@/routes/posts/index';
@@ -33,11 +34,12 @@ defineProps<{
         </div>
 
         <div class="p-6 flex flex-col flex-1">
-            <div class="flex items-center gap-2 mb-3 relative z-10">
+            <div class="flex flex-wrap items-center gap-2 mb-3 relative z-10">
                 <TooltipProvider :delay-duration="0">
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <time :datetime="post.created_at" class="text-[11px] text-[#706f6c] dark:text-[#A1A09A]">
+                            <time :datetime="post.created_at" class="flex items-center gap-1.5 text-[11px] text-[#706f6c] dark:text-[#A1A09A] cursor-default">
+                                <Calendar class="size-3" />
                                 {{ post.created_at_human }}
                             </time>
                         </TooltipTrigger>
@@ -55,33 +57,30 @@ defineProps<{
                 </Link>
             </h2>
 
-            <div v-if="post.author" class="flex items-center gap-1.5 mb-3 text-[12px] text-[#706f6c] dark:text-[#A1A09A]">
-                <div class="size-4 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[7px] font-bold text-zinc-500 dark:text-zinc-400 ring-1 ring-black/5 dark:ring-white/10">
-                    {{ post.author.initials }}
-                </div>
-                <span>{{ post.author.name }}</span>
-            </div>
 
             <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] line-clamp-3 leading-relaxed mb-4">
                 {{ post.excerpt }}
             </p>
 
-            <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-4 relative z-10">
-                <Link
-                    v-for="tag in post.tags"
-                    :key="tag.id"
-                    :href="home({ query: { tag: tag.slug } }).url"
-                    class="inline-flex items-center rounded-full bg-[#19140008] dark:bg-[#ffffff0a] px-2 py-0.5 text-[10px] font-medium text-[#706f6c] dark:text-[#A1A09A] hover:bg-[#f53003]/10 hover:text-[#f53003] dark:hover:bg-[#FF4433]/10 dark:hover:text-[#FF4433] transition-colors"
-                >
-                    #{{ tag.name }}
-                </Link>
-            </div>
+            <template v-if="post.tags?.length">
+                <div class="flex flex-wrap gap-1.5 mb-4 relative z-10">
+                    <Link
+                        v-for="tag in post.tags"
+                        :key="tag.id"
+                        :href="home({ query: { tag: tag.slug } }).url"
+                        class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 hover:bg-[#f53003]/10 hover:text-[#f53003] dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-[#FF4433]/10 dark:hover:text-[#FF4433] transition-colors"
+                    >
+                        #{{ tag.name }}
+                    </Link>
+                </div>
+            </template>
+
 
             <div class="mt-auto flex items-center text-sm font-medium text-[#f53003] dark:text-[#FF4433]">
                 Číst dál
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <ArrowRight
+                    class="size-4 transition-transform group-hover:translate-x-1"
+                />
             </div>
         </div>
     </article>
