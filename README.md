@@ -94,3 +94,4 @@ A modern production-ready blog application built with Laravel 12, Inertia.js v2,
 ## License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
