@@ -4,7 +4,7 @@ A modern production-ready blog application built with Laravel 12, Inertia.js v2,
 
 **Maintained by:** [Vladislav Rajtmajer (@rajtik76)](https://github.com/rajtik76)
 
-**Live Demo:** [https://laravel-blog.cz](https://laravel-blog.cz)
+**Live:** [https://laravel-blog.cz](https://laravel-blog.cz)
 
 ## 🖼️ Preview
 
