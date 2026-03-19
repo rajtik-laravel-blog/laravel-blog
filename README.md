@@ -19,8 +19,8 @@ A modern production-ready blog application built with Laravel 12, Inertia.js v2,
 ![Vue.js](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Pest](https://img.shields.io/badge/Pest-Tested-10B981)
-[![Tests](https://github.com/rajtik-laravel-blog/laravel-blog/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/rajtik-laravel-blog/laravel-blog/actions/workflows/tests.yml)
 ![Inertia](https://img.shields.io/badge/Inertia.js-v2-9553E9)
+[![Tests](https://github.com/rajtik-laravel-blog/laravel-blog/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/rajtik-laravel-blog/laravel-blog/actions/workflows/tests.yml)
 
 - **Database:** [PostgreSQL](https://www.postgresql.org) / [SQLite](https://www.sqlite.org) (dev)
 - **Backend:** [Laravel 12](https://laravel.com)
