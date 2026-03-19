@@ -13,7 +13,7 @@
                 "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
             ],
             "env": {
-                "SITE_PATH": "/Users/vladislav_rajtmajer/PhpstormProjects/laravel-blog"
+                "SITE_PATH": "/Users/vladislavrajtmajer/PhpstormProjects/laravel-blog"
             }
         }
     }

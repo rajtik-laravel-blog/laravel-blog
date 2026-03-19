@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Author;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
@@ -21,7 +22,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(\App\Http\Requests\StorePostRequest $request): RedirectResponse
+    public function store(StorePostRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -106,7 +107,7 @@ class PostController extends Controller
             $post->tags()->detach();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Článek byl úspěšně aktualizován.');
+        return redirect()->route('author.posts.edit', $post)->with('success', 'Článek byl úspěšně uložen.');
     }
 
     public function togglePublish(Post $post): RedirectResponse
@@ -118,7 +119,7 @@ class PostController extends Controller
         $post->is_published = ! $post->is_published;
         $post->save();
 
-        $status = $post->is_published ? 'publikován' : 'stažen z publikace';
+        $status = $post->is_published ? 'publikován' : 'stažen';
 
         return redirect()->back()->with('success', "Článek byl úspěšně {$status}.");
     }

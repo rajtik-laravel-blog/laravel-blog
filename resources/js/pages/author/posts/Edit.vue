@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import PostForm from '@/components/author/PostForm.vue';
+import FlashToast from '@/components/FlashToast.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { update as updatePost } from '@/routes/author/posts';
@@ -39,12 +40,14 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(updatePost(props.post.id).url);
+    form.put(updatePost(props.post.id).url);
 };
 </script>
 
 <template>
     <Head title="Upravit článek" />
+
+    <FlashToast />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

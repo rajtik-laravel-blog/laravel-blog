@@ -83,7 +83,7 @@ test('author can update their post', function () {
     $post = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)
-        ->post(route('author.posts.update', $post), [
+        ->put(route('author.posts.update', $post), [
             'title' => 'Updated Title',
             'content' => 'Updated Content',
             'excerpt' => 'Updated Excerpt',
@@ -91,7 +91,7 @@ test('author can update their post', function () {
             'image' => UploadedFile::fake()->image('post.jpg'),
         ]);
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('author.posts.edit', $post));
 
     $post->refresh();
     expect($post->title)->toBe('Updated Title');
@@ -118,13 +118,13 @@ test('old image is deleted when new image is uploaded', function () {
     $newFile = UploadedFile::fake()->image('new.jpg');
 
     $response = $this->actingAs($author)
-        ->post(route('author.posts.update', $post), [
+        ->put(route('author.posts.update', $post), [
             'title' => $post->title,
             'content' => $post->content,
             'image' => $newFile,
         ]);
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('author.posts.edit', $post));
 
     // 3. Verify old image is deleted and new one exists
     Storage::disk('images')->assertMissing($initialPath);
@@ -139,7 +139,7 @@ test('update post requires title and content', function () {
     $post = Post::factory()->create(['user_id' => $author->id]);
 
     $response = $this->actingAs($author)
-        ->post(route('author.posts.update', $post), [
+        ->put(route('author.posts.update', $post), [
             'title' => '',
             'content' => '',
         ]);

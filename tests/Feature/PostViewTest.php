@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use App\Models\User;
+use Inertia\Testing\AssertableInertia;
 
 test('viewing a post increments its views_count', function () {
     $post = Post::factory()->create(['views_count' => 0]);
@@ -33,7 +34,7 @@ test('dashboard displays total views for authenticated users', function () {
     $response = $this->actingAs($user)->get(route('dashboard'));
 
     $response->assertOk();
-    $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('Dashboard')
         ->where('posts.data.0.views_count', 30)
     );
@@ -45,7 +46,7 @@ test('dashboard displays 0 views for user with no posts', function () {
     $response = $this->actingAs($user)->get(route('dashboard'));
 
     $response->assertOk();
-    $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('Dashboard')
         ->has('posts.data', 0)
     );

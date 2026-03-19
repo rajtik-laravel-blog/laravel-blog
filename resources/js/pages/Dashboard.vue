@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { FileText, Eye, Edit2, Send, RotateCcw } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import FlashToast from '@/components/FlashToast.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { create as createPost, edit as editPost, togglePublish as togglePublishRoute } from '@/routes/author/posts';
@@ -46,15 +49,52 @@ const formatDate = (dateString: string) => {
     });
 };
 
-const togglePublish = (post: Post) => {
-    router.patch(togglePublishRoute(post.id).url, {}, {
+const confirmingPost = ref<Post | null>(null);
+
+const confirmTogglePublish = (post: Post) => {
+    confirmingPost.value = post;
+};
+
+const executeTogglePublish = () => {
+    if (!confirmingPost.value) {
+        return;
+    }
+
+    router.patch(togglePublishRoute(confirmingPost.value.id).url, {}, {
         preserveScroll: true,
+        onFinish: () => {
+            confirmingPost.value = null;
+        },
     });
 };
 </script>
 
 <template>
     <Head title="Nástěnka" />
+
+    <FlashToast />
+
+    <Dialog :open="!!confirmingPost" @update:open="confirmingPost = null">
+        <DialogContent :show-close-button="false">
+            <DialogHeader>
+                <DialogTitle>
+                    {{ confirmingPost?.is_published ? 'Stáhnout článek?' : 'Publikovat článek?' }}
+                </DialogTitle>
+                <DialogDescription>
+                    {{ confirmingPost?.is_published
+                        ? 'Článek bude stažen a přesunut mezi koncepty.'
+                        : 'Článek bude viditelný pro všechny čtenáře.'
+                    }}
+                </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+                <Button variant="outline" @click="confirmingPost = null">Zrušit</Button>
+                <Button @click="executeTogglePublish">
+                    {{ confirmingPost?.is_published ? 'Stáhnout' : 'Publikovat' }}
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-8 p-4 md:p-8">
@@ -126,7 +166,7 @@ const togglePublish = (post: Post) => {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            @click="togglePublish(post)"
+                                            @click="confirmTogglePublish(post)"
                                             :title="post.is_published ? 'Zrušit publikaci' : 'Publikovat'"
                                             class="text-zinc-500 hover:text-[#f53003] dark:hover:text-[#FF4433]"
                                         >

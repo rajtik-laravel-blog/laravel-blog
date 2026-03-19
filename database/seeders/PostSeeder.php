@@ -2,7 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PostSeeder extends Seeder
 {
@@ -11,16 +15,16 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        $tags = \App\Models\Tag::factory(10)->create();
-        $user = \App\Models\User::factory()->create([
+        $tags = Tag::factory(10)->create();
+        $user = User::factory()->create([
             'name' => 'Laravel Author',
             'email' => 'author@laravel.com',
         ]);
 
-        \App\Models\Post::factory(30)
+        Post::factory(30)
             ->recycle($user)
             ->published()
-            ->create(['image_url' => fn (): string => 'https://picsum.photos/seed/'.\Illuminate\Support\Str::random(10).'/1200/600'])
+            ->create(['image_url' => fn (): string => 'https://picsum.photos/seed/'.Str::random(10).'/1200/600'])
             ->each(function ($post) use ($tags) {
                 $post->tags()->attach(
                     $tags->random(rand(2, 4))->pluck('id')->toArray()
